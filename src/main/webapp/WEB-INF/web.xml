@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5">
+
+
+    <!--
+    1. конфигурация spring-компонент разнесена в два основных конфига (mvc.xml и services.xml),
+         чтобы не происходило двойной инициализации компонент : в root-контексте и контексте бинов;
+    2. Убрать ContextLoaderListener нельзя, т.к. без него не грузится сервлетный фильтр,
+       а DispatcherServlet вообще главная точка spring-mvc
+         -->
+
+    <!-- ContextLoaderListener стартует  root WebApplicationContext и загружает все компоненты, кроме web,
+         без него нельзя подключить фильтры (dbLogServletFilter) -->
+    <!--<listener>-->
+        <!--<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>-->
+    <!--</listener>-->
+
+    <!--<context-param>-->
+        <!--<param-name>contextConfigLocation</param-name>-->
+        <!--&lt;!&ndash;<param-value>/WEB-INF/mvc.xml</param-value>&ndash;&gt;-->
+        <!--<param-value>/WEB-INF/spring-config.xml</param-value>-->
+    <!--</context-param>-->
+
+
+    <!--  DispatcherServlet является главной точкой входав web-приложение
+          но грузит только web-компоненты, чтобы не происходило двойного-->
+    <servlet>
+        <servlet-name>m1</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/spring-config.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>m1</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>
